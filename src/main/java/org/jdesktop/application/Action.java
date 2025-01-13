@@ -65,6 +65,12 @@ public @interface Action {
      */
     String name() default "";
 
+    String message() default "";
+
+    String title() default "";
+
+    int typeMessage() default 0;
+
     /**
      * The parameter binds the enabled state of the @Action to the current value of a property.
      */

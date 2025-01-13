@@ -1,18 +1,16 @@
 /*
-* Copyright (C) 2006 Sun Microsystems, Inc. All rights reserved. Use is
-* subject to license terms.
-*/
+ * Copyright (C) 2006 Sun Microsystems, Inc. All rights reserved. Use is
+ * subject to license terms.
+ */
 package org.jdesktop.application;
 
 import org.jdesktop.application.utils.AppHelper;
 import org.jdesktop.application.utils.PlatformType;
 
-import javax.jnlp.*;
 import java.awt.*;
 import java.beans.*;
 import java.io.*;
 import java.lang.reflect.Method;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,9 +23,9 @@ import static org.jdesktop.application.Application.KEY_APPLICATION_VENDOR_ID;
 /**
  * Access to per application, per user, local file storage.
  *
+ * @author Hans Muller (Hans.Muller@Sun.COM)
  * @see ApplicationContext#getLocalStorage
  * @see SessionStorage
- * @author Hans Muller (Hans.Muller@Sun.COM)
  */
 public class LocalStorage extends AbstractBean {
 
@@ -38,14 +36,14 @@ public class LocalStorage extends AbstractBean {
     private final File unspecifiedFile = new File("unspecified");
     private File directory = unspecifiedFile;
     private Map<Class<?>, PersistenceDelegate> persistentDelegatesMap;
-    
+
     static {
         Map<Class<?>, PersistenceDelegate> fixInternals = new HashMap<Class<?>, PersistenceDelegate>();
 
         fixInternals.put(DefaultListModel.class, new DefaultListModelPD());
         fixInternals.put(File.class, new DefaultPersistenceDelegate(new String[]{"path"}));
         fixInternals.put(URL.class, new PrimitivePersistenceDelegate());
-       
+
         // JDK bug ID 4741757 was fixed with the release of JDK 1.6 (It is listed in the JDK 6 Adoption Guide).
         // As a consequence, the RectanglePD is not needed since its release.
         // Removing it resolves BSAF-107.
@@ -86,7 +84,7 @@ public class LocalStorage extends AbstractBean {
      * If the named entry cannot be opened for reading
      * then a {@code IOException} is thrown.
      *
-     * @param fileName  the storage-dependent name
+     * @param fileName the storage-dependent name
      * @return an {@code InputStream} object
      * @throws IOException if the specified name is invalid,
      *                     or an input stream cannot be opened
@@ -104,7 +102,7 @@ public class LocalStorage extends AbstractBean {
      * If the named entry does not exist it can be created.
      * The entry will be recreated if already exists.
      *
-     * @param fileName  the storage-dependent name
+     * @param fileName the storage-dependent name
      * @return an {@code OutputStream} object
      * @throws IOException if the specified name is invalid,
      *                     or an output stream cannot be opened
@@ -121,9 +119,9 @@ public class LocalStorage extends AbstractBean {
      * If the named entry does not exist it can be created.
      * You can decide whether data will be appended via append parameter.
      *
-     * @param fileName  the storage-dependent name
-     * @param append if <code>true</code>, then bytes will be written
-     *                   to the end of the output entry rather than the beginning
+     * @param fileName the storage-dependent name
+     * @param append   if <code>true</code>, then bytes will be written
+     *                 to the end of the output entry rather than the beginning
      * @return an {@code OutputStream} object
      * @throws IOException if the specified name is invalid,
      *                     or an output stream cannot be opened
@@ -136,7 +134,7 @@ public class LocalStorage extends AbstractBean {
     /**
      * Deletes the entry specified by the {@code name} parameter.
      *
-     * @param fileName  the storage-dependent name
+     * @param fileName the storage-dependent name
      * @throws IOException if the specified name is invalid,
      *                     or an internal entry cannot be deleted
      */
@@ -165,7 +163,8 @@ public class LocalStorage extends AbstractBean {
 
     /**
      * Saves the {@code bean} to the local storage
-     * @param bean the object ot be saved
+     *
+     * @param bean     the object ot be saved
      * @param fileName the targen file name
      * @throws IOException
      */
@@ -208,6 +207,7 @@ public class LocalStorage extends AbstractBean {
 
     /**
      * Loads the bean from the local storage
+     *
      * @param fileName name of the file to be read from
      * @return loaded object
      * @throws IOException
@@ -248,6 +248,7 @@ public class LocalStorage extends AbstractBean {
 
     /**
      * Gets the limit of the local storage
+     *
      * @return the limit of the local storage
      */
     public long getStorageLimit() {
@@ -256,6 +257,7 @@ public class LocalStorage extends AbstractBean {
 
     /**
      * Sets the limit of the local storage
+     *
      * @param storageLimit the limit of the local storage
      */
     public void setStorageLimit(long storageLimit) {
@@ -291,8 +293,9 @@ public class LocalStorage extends AbstractBean {
 
     /**
      * Method sets persistent delegates for XML Encoder which is being used for serialization of the bean.<br />
-     * @see java.beans.Encoder#setPersistenceDelegate(java.lang.Class, java.beans.PersistenceDelegate)
+     *
      * @param persistentDelegatesMap map with persistent delegates
+     * @see java.beans.Encoder#setPersistenceDelegate(java.lang.Class, java.beans.PersistenceDelegate)
      * @since 1.9.3
      */
     public void setPersistentDelegates(Map<Class<?>, PersistenceDelegate> persistentDelegatesMap) {
@@ -303,6 +306,7 @@ public class LocalStorage extends AbstractBean {
     /**
      * Method returns persistent delegates for XML Encoder, which is being used for serialization of the bean.<br />
      * See http://kenai.com/jira/browse/BSAF-61 for more details.
+     *
      * @see java.beans.Encoder#getPersistenceDelegate
      * @since 1.9.3
      */
@@ -310,12 +314,13 @@ public class LocalStorage extends AbstractBean {
         if (persistentDelegatesMap == null) {
             persistentDelegatesMap = new HashMap<Class<?>, PersistenceDelegate>();
         }
-        
+
         return persistentDelegatesMap;
     }
 
     /**
      * Returns the directory where the local storage is located
+     *
      * @return the directory where the local storage is located
      */
     public File getDirectory() {
@@ -364,6 +369,7 @@ public class LocalStorage extends AbstractBean {
 
     /**
      * Sets the location of the local storage
+     *
      * @param directory the location of the local storage
      */
     public void setDirectory(File directory) {
@@ -373,12 +379,12 @@ public class LocalStorage extends AbstractBean {
     }
 
     /* There are some (old) Java classes that aren't proper beans.  Rectangle
-     * is one of these.  When running within the secure sandbox, writing a 
-     * Rectangle with XMLEncoder causes a security exception because 
+     * is one of these.  When running within the secure sandbox, writing a
+     * Rectangle with XMLEncoder causes a security exception because
      * DefaultPersistenceDelegate calls Field.setAccessible(true) to gain
      * access to private fields.  This is a workaround for that problem.
      * A bug has been filed, see JDK bug ID 4741757.
-     * 
+     *
      * The JDK bug was fixed in version 1.6 b76.
      */
     private static class RectanglePD extends DefaultPersistenceDelegate {
@@ -396,7 +402,7 @@ public class LocalStorage extends AbstractBean {
             return new Expression(oldInstance, oldInstance.getClass(), "new", constructorArgs);
         }
     }
-    
+
     /* The JVM's persistence delegate in Java 1.6 and 1.7 is invalid in that the persisted model is a list of null values.
      * The problem is that the author incorrectly assumed that the newInstance would be created empty when, in
      * fact, it is fully populated with null values (See setSize in DefaultListModel).
@@ -447,7 +453,7 @@ public class LocalStorage extends AbstractBean {
          * If the named entry cannot be opened for reading
          * then a {@code IOException} is thrown.
          *
-         * @param fileName  the storage-dependent name
+         * @param fileName the storage-dependent name
          * @return an {@code InputStream} object
          * @throws IOException if the specified name is invalid,
          *                     or an input stream cannot be opened
@@ -463,7 +469,7 @@ public class LocalStorage extends AbstractBean {
          * If the named entry does not exist it can be created.
          * The entry will be recreated if already exists.
          *
-         * @param fileName  the storage-dependent name
+         * @param fileName the storage-dependent name
          * @return an {@code OutputStream} object
          * @throws IOException if the specified name is invalid,
          *                     or an output stream cannot be opened
@@ -481,9 +487,9 @@ public class LocalStorage extends AbstractBean {
          * If the named entry does not exist it can be created.
          * You can decide whether data will be appended via append parameter.
          *
-         * @param fileName  the storage-dependent name
-         * @param append if <code>true</code>, then bytes will be written
-         *                   to the end of the output entry rather than the beginning
+         * @param fileName the storage-dependent name
+         * @param append   if <code>true</code>, then bytes will be written
+         *                 to the end of the output entry rather than the beginning
          * @return an {@code OutputStream} object
          * @throws IOException if the specified name is invalid,
          *                     or an output stream cannot be opened
@@ -493,7 +499,7 @@ public class LocalStorage extends AbstractBean {
         /**
          * Deletes the entry specified by the {@code name} parameter.
          *
-         * @param fileName  the storage-dependent name
+         * @param fileName the storage-dependent name
          * @throws IOException if the specified name is invalid,
          *                     or an internal entry cannot be deleted
          */
@@ -543,7 +549,7 @@ public class LocalStorage extends AbstractBean {
 
     /* Determine if we're a web started application and the
      * JNLP PersistenceService is available without forcing
-     * the JNLP API to be class-loaded.  We don't want to 
+     * the JNLP API to be class-loaded.  We don't want to
      * require apps that aren't web started to bundle javaws.jar
      */
     private LocalIO getPersistenceServiceIO() {
@@ -571,78 +577,38 @@ public class LocalStorage extends AbstractBean {
 
     private final class PersistenceServiceIO extends LocalIO {
 
-        private BasicService bs;
-        private PersistenceService ps;
 
         private String initFailedMessage(String s) {
             return getClass().getName() + " initialization failed: " + s;
         }
 
         PersistenceServiceIO() {
-            try {
-                bs = (BasicService) ServiceManager.lookup("javax.jnlp.BasicService");
-                ps = (PersistenceService) ServiceManager.lookup("javax.jnlp.PersistenceService");
-            } catch (UnavailableServiceException e) {
-                logger.log(Level.SEVERE, initFailedMessage("ServiceManager.lookup"), e);
-                bs = null;
-                ps = null;
-            }
+
         }
 
         private void checkBasics(String s) throws IOException {
-            if ((bs == null) || (ps == null)) {
-                throw new IOException(initFailedMessage(s));
-            }
+
         }
 
         private URL fileNameToURL(String name) throws IOException {
             if (name == null) {
                 throw new IOException("name is not set");
             }
-            try {
-                return new URL(bs.getCodeBase(), name);
-            } catch (MalformedURLException e) {
-                throw new IOException("invalid filename \"" + name + "\"", e);
-            }
+            return null;
+
         }
 
         @Override
         public InputStream openInputFile(String fileName) throws IOException {
             checkBasics("openInputFile");
             URL fileURL = fileNameToURL(fileName);
-            try {
-                return new BufferedInputStream(ps.get(fileURL).getInputStream());
-            } catch (Exception e) {
-                throw new IOException("openInputFile \"" + fileName + "\" failed", e);
-            }
+            throw new IOException("openInputFile ");
         }
 
         @Override
         public OutputStream openOutputFile(String fileName, boolean append) throws IOException {
             checkBasics("openOutputFile");
-            URL fileURL = fileNameToURL(fileName);
-            try {
-                FileContents fc = null;
-                try {
-                    fc = ps.get(fileURL);
-                } catch (FileNotFoundException e) {
-                    /* Verify that the max size for new PersistenceService
-                     * files is >= 100K (2^17) before opening one.
-                     */
-                    long maxSizeRequest = 131072L;
-                    long maxSize = ps.create(fileURL, maxSizeRequest);
-                    if (maxSize >= maxSizeRequest) {
-                        fc = ps.get(fileURL);
-                    }
-                }
-                if ((fc != null) && (fc.canWrite())) {
-                    return new BufferedOutputStream(fc.getOutputStream(!append));
-                } else {
-                    throw new IOException("unable to create FileContents object");
-                }
-            } catch (Exception e) {
-                throw new IOException("openOutputFile \"" + fileName + "\" failed", e);
-            }
+            throw new IOException("openOutputFile not supported");
         }
 
         @Override
@@ -650,7 +616,6 @@ public class LocalStorage extends AbstractBean {
             checkBasics("deleteFile");
             URL fileURL = fileNameToURL(fileName);
             try {
-                ps.delete(fileURL);
                 return true;
             } catch (Exception e) {
                 throw new IOException("openInputFile \"" + fileName + "\" failed", e);
